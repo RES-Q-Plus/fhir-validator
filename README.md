@@ -1,5 +1,6 @@
-# bash 
+```bash 
 docker compose build 
-
-#bash 
+```
+```bash 
 docker compose up
+```
