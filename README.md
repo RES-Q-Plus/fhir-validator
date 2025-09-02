@@ -1,4 +1,4 @@
-For compile and generate the containers do : 
+Compile and generate the containers with : 
 ```bash 
 docker compose build 
 ```
