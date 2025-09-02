@@ -1,0 +1,93 @@
+version: "3.9"
+
+services:
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.11.1
+    container_name: elasticsearch
+    environment:
+      # Single-node ES, security off for local/dev
+      - discovery.type=single-node
+      - xpack.security.enabled=false
+      - node.name=snowstorm
+      - cluster.name=snowstorm-cluster
+      # ES heap size (adjust to your machine)
+      - ES_JAVA_OPTS=-Xms4g -Xmx4g
+    volumes:
+      # Persist ES data on a named volume
+      - elastic:/usr/share/elasticsearch/data
+    networks: [elastic]
+    healthcheck:
+      # Wait for ES to reach at least YELLOW
+      test: ["CMD", "curl", "-fsS", "http://localhost:9200/_cluster/health?wait_for_status=yellow&timeout=50s"]
+      interval: 10s
+      timeout: 5s
+      retries: 30
+    ports:
+      # Expose ES to host only (loopback)
+      - 127.0.0.1:9200:9200
+
+  snowstorm:
+    image: snomedinternational/snowstorm:latest
+    container_name: snowstorm
+    depends_on:
+      elasticsearch:
+        condition: service_healthy
+    entrypoint: >
+      java -Xms2g -Xmx4g
+      --add-opens java.base/java.lang=ALL-UNNAMED
+      --add-opens=java.base/java.util=ALL-UNNAMED
+      -cp @/app/jib-classpath-file
+      org.snomed.snowstorm.SnowstormApplication
+      --elasticsearch.urls=http://elasticsearch:9200
+    networks:
+      elastic:
+        aliases:
+          - snowstorm
+    ports:
+      # Map Snowstorm to host port 8081 (container is 8080)
+      - "8081:8080"
+    healthcheck:
+      # Ensure the Snowstorm FHIR (R4) endpoint is up before validator starts
+      test: ["CMD-SHELL", "curl -fsS http://localhost:8080/fhir/metadata | grep -q 'CapabilityStatement'"]
+      interval: 10s
+      timeout: 5s
+      retries: 30
+      start_period: 40s  # give Snowstorm time to warm up
+
+  validator:
+    build: .
+    image: local/fhir-r5-validator-api:latest
+    depends_on:
+      # Wait until Snowstorm healthcheck passes to avoid early calls failing
+      snowstorm:
+        condition: service_healthy
+    environment:
+      # We disable HAPI's remote Snowstorm terminology in the chain
+      # because we use our own R5 validator module that calls Snowstorm directly.
+      APP_FHIR_SNOWSTORM_ENABLED: "false"
+
+      # Align with SnowstormClient:
+      # SnowstormClient reads app.snowstorm.base (WITHOUT /fhir),
+      # then it appends "/fhir/CodeSystem/$validate-code".
+      APP_SNOWSTORM_BASE: "http://snowstorm:8080"
+      # Optional: branch for the native browser endpoint (if you use it)
+      APP_SNOWSTORM_BRANCH: "MAIN"
+
+      # tx.fhir.org fallback (R5)
+      APP_FHIR_TXBASEURL: "https://tx.fhir.org/r5"
+
+      # IG(s) packaged on the classpath
+      APP_FHIR_IGCLASSPATHPACKAGES: "classpath:/ig/SKtestIG-3.0.0.tgz"
+    networks:
+      elastic:
+        aliases:
+          - validator
+    ports:
+      # Expose your validator API on host:8085
+      - "8085:8080"
+
+networks:
+  elastic:
+
+volumes:
+  elastic:
