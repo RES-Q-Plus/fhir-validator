@@ -2,7 +2,7 @@ Compile and generate the containers with :
 ```bash 
 docker compose build 
 ```
-Once they are correctly built , raise it up with :
+Once they are correctly built , raise them up with :
 ```bash 
 docker compose up
 ```
