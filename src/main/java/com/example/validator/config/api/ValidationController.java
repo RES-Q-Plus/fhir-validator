@@ -53,7 +53,10 @@ public class ValidationController {
     Bundle bundle = (Bundle) json.parseResource(bundleJson);
 
     // Validate using the configured FhirValidator (core chain + custom SNOMED validator)
-    ValidationResult vr = validator.validateWithResult(bundle);
+    String withNarrJson = json.encodeResourceToString(bundle);        // genera <text> si falta
+    Bundle bundleWithNarr = (Bundle) json.parseResource(withNarrJson);
+
+    ValidationResult vr = validator.validateWithResult(bundleWithNarr);
 
     // Convert the result to a standard OperationOutcome
     OperationOutcome oo = (OperationOutcome) vr.toOperationOutcome();

@@ -5,6 +5,8 @@ import ca.uhn.fhir.parser.IParser;
 import ca.uhn.fhir.validation.FhirValidator;
 
 import ca.uhn.fhir.context.support.DefaultProfileValidationSupport;
+import ca.uhn.fhir.narrative.DefaultThymeleafNarrativeGenerator;
+
 import org.hl7.fhir.common.hapi.validation.support.*;
 import org.hl7.fhir.common.hapi.validation.validator.FhirInstanceValidator;
 
@@ -57,6 +59,8 @@ public class FhirValidatorConfig {
     ctx.getRestfulClientFactory()
       .setServerValidationMode(ca.uhn.fhir.rest.client.api.ServerValidationModeEnum.NEVER);
     ctx.getRestfulClientFactory().setSocketTimeout(30000);
+    ctx.setNarrativeGenerator(new DefaultThymeleafNarrativeGenerator());
+
     return ctx;
   }
 
