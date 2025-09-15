@@ -9,7 +9,7 @@ import ca.uhn.fhir.narrative.DefaultThymeleafNarrativeGenerator;
 
 import org.hl7.fhir.common.hapi.validation.support.*;
 import org.hl7.fhir.common.hapi.validation.validator.FhirInstanceValidator;
-
+import org.hl7.fhir.r5.utils.validation.constants.BestPracticeWarningLevel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -148,7 +148,7 @@ public class FhirValidatorConfig {
     // Standard module using the chain
     FhirInstanceValidator module = new FhirInstanceValidator(chain);
     module.setAnyExtensionsAllowed(true);
-
+    module.setBestPracticeWarningLevel(BestPracticeWarningLevel.Ignore);
     // Build the validator from the R5 context and register both modules
     FhirValidator validator = ctxR5.newValidator().registerValidatorModule(module);
 
