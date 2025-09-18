@@ -77,7 +77,7 @@ services:
       APP_FHIR_TXBASEURL: "https://tx.fhir.org/r5"
 
       # IG(s) packaged on the classpath
-      APP_FHIR_IGCLASSPATHPACKAGES: "classpath:/ig/SKtestIG-3.6.5.tgz"
+      APP_FHIR_IGCLASSPATHPACKAGES: "classpath:/ig/SKtestIG-3.6.7.tgz"
     networks:
       elastic:
         aliases:
