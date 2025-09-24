@@ -54,3 +54,9 @@ For example :
    ]
 }
 ```
+
+# SNOWSTORM
+To upload SNOMED CT codes, see https://github.com/IHTSDO/snowstorm/blob/master/docs/loading-snomed.md.
+
+If you don't upload the SNOMED CT codes, the validator will show errors related to SNOMED CT.
+
