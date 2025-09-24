@@ -9,5 +9,5 @@ docker compose up
 
 # Ports
 
-Snowstorm: http://localhost:8081/swagger-ui/
-Validator API: http://localhost:8085/swagger-ui/
+Snowstorm: http://localhost:8081/swagger-ui/index.html
+Validator API: http://localhost:8085/swagger-ui/index.html
