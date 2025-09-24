@@ -1,8 +1,5 @@
-Compile and generate the containers with : 
-```bash 
-docker compose build 
-```
-Once they are correctly built , raise them up with :
+Once you have cloned the repository, run the following command to build and start the containers:
+
 ```bash 
 docker compose up
 ```
@@ -15,7 +12,7 @@ Validator API: http://localhost:8085/swagger-ui/index.html
 
 # Validator
 
-For the correct working of the API, you have to upload a correct FHIR Bundle in correct JSON Format
+For the API to work correctly, you must upload a valid FHIR Bundle in JSON format.
 
 For example : 
 ```json
