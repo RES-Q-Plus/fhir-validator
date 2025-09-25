@@ -12,10 +12,8 @@ Validator API: http://localhost:8085/swagger-ui/index.html
 
 # Validator
 
-For the API to work correctly, you must upload a valid FHIR Bundle in JSON format.
-
-For example : 
-[Download bundle examples](./bundles_examples.zip)
+For the API to work correctly, you must upload a valid FHIR Bundle in JSON format. 
+As follows [Download bundle examples](./bundles_examples.zip)
 
 # SNOWSTORM
 To upload SNOMED CT codes, see https://github.com/IHTSDO/snowstorm/blob/master/docs/loading-snomed.md.
