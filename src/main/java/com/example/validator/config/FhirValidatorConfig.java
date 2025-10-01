@@ -19,6 +19,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.util.StringUtils;
 
+import com.example.validator.validation.RequiredResourcesValidator;
 import com.example.validator.validation.SnomedSnowstormValidator;
 
 import java.io.IOException;
@@ -143,7 +144,8 @@ public class FhirValidatorConfig {
   public FhirValidator fhirValidator(
       @Qualifier("r5Ctx") FhirContext ctxR5,
       ValidationSupportChain chain,
-      SnomedSnowstormValidator snomedModule
+      SnomedSnowstormValidator snomedModule, 
+      RequiredResourcesValidator requiredResourcesModule
   ) {
     // Standard module using the chain
     FhirInstanceValidator module = new FhirInstanceValidator(chain);
@@ -154,7 +156,7 @@ public class FhirValidatorConfig {
 
     // Register the custom SNOMED module (talks to Snowstorm out-of-band)
     validator.registerValidatorModule(snomedModule);
-
+    validator.registerValidatorModule(requiredResourcesModule);
     // Parallelize bundle validation to speed up multi-entry bundles
     validator.setConcurrentBundleValidation(true);
     return validator;
