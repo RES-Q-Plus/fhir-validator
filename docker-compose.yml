@@ -1,5 +1,4 @@
 services:
-  # --- Infra para Snowstorm ---
   elasticsearch:
     image: docker.elastic.co/elasticsearch/elasticsearch:8.11.1
     container_name: elasticsearch
@@ -46,10 +45,9 @@ services:
       retries: 30
       start_period: 40s
 
-  # --- Validador FHIR R5 ---
   validator:
     build:
-      context: ./fhir-validator        # <- repo clonado del validador
+      context: ./fhir-validator  
       dockerfile: Dockerfile
     image: local/fhir-r5-validator-api:latest
     container_name: validator
@@ -57,11 +55,8 @@ services:
       snowstorm:
         condition: service_healthy
     environment:
-      # Snowstorm FHIR (R4) para SNOMED
       APP_FHIR_SNOWSTORM_BASEURL: "http://snowstorm:8080/fhir"
-      # Fallback terminológico (no SNOMED)
       APP_FHIR_TXBASEURL: "https://tx.fhir.org/r5"
-      # IGs incluidos en el jar (ajusta si cambia la ruta/paquete)
       APP_FHIR_IGCLASSPATHPACKAGES: "classpath:/ig/SKtestIG-4.0.0.tgz"
     networks:
       sknet:
